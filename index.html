@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SkillUp</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="font-inter bg-white min-h-screen flex flex-col">
+
+  <!-- Navbar -->
+  <header class="flex flex-wrap items-center justify-between border-b px-6 py-4 md:px-10">
+    <div class="flex items-center gap-4 mb-2 md:mb-0">
+      <div class="w-10 h-10 text-blue-700">
+        <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <path d="M24 4C25.78 14.22 33.78 22.22 44 24C33.78 25.78 25.78 33.78 24 44C22.22 33.78 14.22 25.78 4 24C14.22 22.22 22.22 14.22 24 4Z" fill="currentColor"/>
+        </svg>
+      </div>
+      <h2 class="text-lg font-bold">SkillUp</h2>
+    </div>
+    <div class="flex gap-2 mt-2 md:mt-0">
+      <a href="login.html" class="text-sm font-bold px-4 py-2 border rounded-lg hover:bg-gray-100 focus:outline-none focus-visible:ring-2 ring-offset-2 ring-blue-500">Login</a>
+      <a href="signup.html" class="text-sm font-bold px-4 py-2 bg-[#d2e2f3] rounded-lg hover:bg-[#b8d4f0] focus:outline-none focus-visible:ring-2 ring-offset-2 ring-blue-500">Sign Up</a>
+    </div>
+  </header>
+
+  <main class="flex flex-1 justify-center py-5 px-6 md:px-20">
+    <div class="w-full max-w-4xl flex flex-col space-y-10">
+
+      <!-- Hero -->
+      <div class="relative hero-bg rounded-xl p-6 md:p-10 flex flex-col items-center justify-center text-center animate-fadeIn">
+        <h1 class="text-white text-3xl md:text-4xl font-black mb-3">Unlock Your Potential with AI‑Powered Career Guidance</h1>
+        <p class="text-white text-sm md:text-base max-w-2xl mb-6">Discover personalized career paths tailored to your unique skills and aspirations.</p>
+
+        <!-- Removed search box as you requested -->
+
+        <div id="careerResults" class="mt-6 w-full text-white text-left" aria-live="polite" aria-relevant="additions"></div>
+      </div>
+
+      <!-- How It Works -->
+      <section class="space-y-6 px-2 animate-slideUp" aria-label="How It Works section">
+        <h2 class="text-2xl md:text-3xl font-bold">How It Works</h2>
+        <p class="text-gray-600 text-sm">Our platform uses advanced AI algorithms to match your skills with potential career paths...</p>
+        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <article class="flex flex-col gap-3 border rounded-lg p-4 hover:shadow-md transition" tabindex="0" aria-describedby="skillDesc1">
+            <h3 class="font-bold" id="skillDesc1">Skill Assessment</h3>
+            <p class="text-gray-600 text-sm">Input your skills and experience...</p>
+          </article>
+          <article class="flex flex-col gap-3 border rounded-lg p-4 hover:shadow-md transition" tabindex="0" aria-describedby="skillDesc2">
+            <h3 class="font-bold" id="skillDesc2">Personalized Recommendations</h3>
+            <p class="text-gray-600 text-sm">Receive tailored career suggestions...</p>
+          </article>
+          <article class="flex flex-col gap-3 border rounded-lg p-4 hover:shadow-md transition" tabindex="0" aria-describedby="skillDesc3">
+            <h3 class="font-bold" id="skillDesc3">Career Development</h3>
+            <p class="text-gray-600 text-sm">Access resources and courses...</p>
+          </article>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="border-t py-6 text-center text-gray-600 text-sm" role="contentinfo">
+    <div class="flex flex-wrap justify-center gap-4 mb-3">
+      <a href="#" class="focus-visible:ring-2 ring-offset-2 ring-blue-500 rounded">About Us</a>
+      <a href="#" class="focus-visible:ring-2 ring-offset-2 ring-blue-500 rounded">Contact</a>
+      <a href="#" class="focus-visible:ring-2 ring-offset-2 ring-blue-500 rounded">Privacy</a>
+      <a href="#" class="focus-visible:ring-2 ring-offset-2 ring-blue-500 rounded">Terms</a>
+    </div>
+    <p>&copy; 2024 SkillUp. All rights reserved.</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

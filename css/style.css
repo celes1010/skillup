@@ -1,0 +1,6 @@
+.hero-bg {
+  background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.4)), url("../image/hero-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  height: 480px;
+}
