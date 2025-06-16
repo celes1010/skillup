@@ -276,19 +276,22 @@
     }
 
     // Check if user is already logged in
+    let hasRedirected = false;
     onAuthStateChanged(auth, (user) => {
-      if (user) {
+      if (user && !hasRedirected) {
         showDebug(`User already logged in: ${user.email}`);
         showSuccess(`Already logged in as ${user.email}`);
+        hasRedirected = true;
+        
         // Show manual redirect option immediately
         document.getElementById('manualRedirect').style.display = 'block';
         
         // Still attempt automatic redirect
         setTimeout(() => {
           attemptRedirect();
-        }, 2000);
-      } else {
-        showDebug('No user logged in');
+        }, 1000);
+      } else if (!user) {
+        showDebug('No user logged in - ready for login');
       }
     });
 
