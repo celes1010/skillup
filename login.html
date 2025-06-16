@@ -113,7 +113,25 @@
       margin-top: 16px;
       font-size: 0.8rem;
       color: #64748b;
+      display: block;
+    }
+    .manual-redirect {
+      text-align: center;
+      margin-top: 16px;
       display: none;
+    }
+    .manual-redirect a {
+      color: #3b82f6;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 16px;
+      border: 1px solid #3b82f6;
+      border-radius: 6px;
+      display: inline-block;
+    }
+    .manual-redirect a:hover {
+      background-color: #3b82f6;
+      color: white;
     }
   </style>
 </head>
@@ -141,9 +159,14 @@
       Don't have an account? <a href="signup.html">Sign Up</a>
     </div>
     
+    <div id="manualRedirect" class="manual-redirect">
+      <p>Login successful! If you're not redirected automatically:</p>
+      <a href="dashboard.html">Go to Dashboard</a>
+    </div>
+    
     <div id="debugInfo" class="debug-info">
       <strong>Debug Info:</strong><br>
-      <span id="debugText"></span>
+      <span id="debugText">Page loaded, waiting for login...</span>
     </div>
   </div>
 
@@ -192,10 +215,9 @@
     }
 
     function showDebug(message) {
-      const debugElement = document.getElementById('debugInfo');
       const debugText = document.getElementById('debugText');
       debugText.textContent = message;
-      debugElement.style.display = 'block';
+      console.log('Debug:', message);
     }
 
     function setLoading(isLoading) {
@@ -230,13 +252,41 @@
       return isValid;
     }
 
+    function attemptRedirect() {
+      showDebug('Attempting redirect to dashboard...');
+      
+      // Try multiple possible dashboard file names
+      const possibleDashboardNames = [
+        'dashboard.html',
+        'Dashboard.html', 
+        'index.html',
+        'home.html',
+        'main.html'
+      ];
+      
+      // First, try the standard redirect
+      try {
+        window.location.href = possibleDashboardNames[0];
+        showDebug(`Redirecting to ${possibleDashboardNames[0]}`);
+      } catch (error) {
+        showDebug(`Redirect failed: ${error.message}`);
+        // Show manual redirect option
+        document.getElementById('manualRedirect').style.display = 'block';
+      }
+    }
+
     // Check if user is already logged in
     onAuthStateChanged(auth, (user) => {
       if (user) {
         showDebug(`User already logged in: ${user.email}`);
-        // If user is already logged in, redirect to dashboard
-        // Comment out the next line if you don't want auto-redirect
-        // window.location.href = 'dashboard.html';
+        showSuccess(`Already logged in as ${user.email}`);
+        // Show manual redirect option immediately
+        document.getElementById('manualRedirect').style.display = 'block';
+        
+        // Still attempt automatic redirect
+        setTimeout(() => {
+          attemptRedirect();
+        }, 2000);
       } else {
         showDebug('No user logged in');
       }
@@ -268,11 +318,14 @@
         // Clear form
         document.getElementById('loginForm').reset();
         
-        // Redirect to dashboard
-        showDebug('Redirecting to dashboard...');
+        // Show manual redirect option
+        document.getElementById('manualRedirect').style.display = 'block';
+        
+        // Attempt automatic redirect after a short delay
+        showDebug('Redirecting to dashboard in 2 seconds...');
         setTimeout(() => {
-          window.location.href = 'dashboard.html';
-        }, 1500);
+          attemptRedirect();
+        }, 2000);
 
       } catch (error) {
         console.error('Login error:', error);
