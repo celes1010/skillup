@@ -99,9 +99,11 @@ document.getElementById('loginForm').addEventListener('submit', e => {
   }
 
   if(valid) {
-    alert('Login successful (demo)');
-    e.target.reset();
-  }
+    localStorage.setItem('token', 'demo-auth-token-' + Date.now());
+    localStorage.setItem('userName', emailInput.value.split('@')[0]);
+    alert('Login successful! Redirecting to dashboard...');
+    window.location.href = 'dashboard.html';
+}
 });
 
 document.getElementById('signUpForm').addEventListener('submit', e => {
@@ -133,8 +135,15 @@ document.getElementById('signUpForm').addEventListener('submit', e => {
     hideError('signUpPassword');
   }
 
-  if(valid) {
-    alert('Sign Up successful (demo)');
-    e.target.reset();
-  }
+ if(valid) {
+    // Store authentication token and user info
+    localStorage.setItem('token', 'demo-auth-token-' + Date.now());
+    localStorage.setItem('userName', nameInput.value); // Use full name for signup
+    
+    // Show success message briefly then redirect
+    alert('Sign up successful! Redirecting to dashboard...');
+    
+    // Redirect to dashboard
+    window.location.href = 'dashboard.html';
+}
 });
