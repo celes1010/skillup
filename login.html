@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SkillUp - Login</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f7fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 {
+      margin-bottom: 24px;
+      text-align: center;
+      color: #1e293b;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #334155;
+    }
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+      box-sizing: border-box;
+    }
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 4px rgba(59, 130, 246, 0.3);
+    }
+    .error-message {
+      color: #dc2626;
+      font-size: 0.875rem;
+      margin-top: -12px;
+      margin-bottom: 12px;
+      display: none;
+    }
+    .success-message {
+      color: #16a34a;
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+      text-align: center;
+      display: none;
+    }
+    button {
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      padding: 14px;
+      width: 100%;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #2563eb;
+    }
+    button:disabled {
+      background-color: #94a3b8;
+      cursor: not-allowed;
+    }
+    .switch-auth {
+      text-align: center;
+      margin-top: 16px;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+    .switch-auth a {
+      color: #3b82f6;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .switch-auth a:hover {
+      color: #2563eb;
+    }
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 16px;
+      color: #64748b;
+    }
+    .debug-info {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 16px;
+      font-size: 0.8rem;
+      color: #64748b;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="main">
+    <h2>Login to SkillUp</h2>
+    
+    <div id="successMessage" class="success-message"></div>
+    
+    <form id="loginForm" novalidate>
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" name="loginEmail" required />
+      <p id="loginEmailError" class="error-message" aria-live="polite"></p>
+
+      <label for="loginPassword">Password</label>
+      <input type="password" id="loginPassword" name="loginPassword" required minlength="6" />
+      <p id="loginPasswordError" class="error-message" aria-live="polite"></p>
+
+      <button type="submit" id="loginButton">Login</button>
+    </form>
+    
+    <div id="loading" class="loading">Logging you in...</div>
+    
+    <div class="switch-auth">
+      Don't have an account? <a href="signup.html">Sign Up</a>
+    </div>
+    
+    <div id="debugInfo" class="debug-info">
+      <strong>Debug Info:</strong><br>
+      <span id="debugText"></span>
+    </div>
+  </div>
+
+  <!-- Include Firebase SDK -->
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyC-FipyxjObJ8LVISswD0EHGuOwoutrOqU",
+      authDomain: "skillup-e7fda.firebaseapp.com",
+      projectId: "skillup-e7fda",
+      storageBucket: "skillup-e7fda.appspot.com",
+      messagingSenderId: "869847723823",
+      appId: "1:869847723823:web:6d0ef80cd5e7f3b41a3bda",
+      measurementId: "G-20XMNRX7V6"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Helper functions
+    function showError(elementId, message) {
+      const errorElement = document.getElementById(elementId);
+      errorElement.textContent = message;
+      errorElement.style.display = 'block';
+    }
+
+    function hideError(elementId) {
+      const errorElement = document.getElementById(elementId);
+      errorElement.style.display = 'none';
+    }
+
+    function hideAllErrors() {
+      hideError('loginEmailError');
+      hideError('loginPasswordError');
+    }
+
+    function showSuccess(message) {
+      const successElement = document.getElementById('successMessage');
+      successElement.textContent = message;
+      successElement.style.display = 'block';
+    }
+
+    function showDebug(message) {
+      const debugElement = document.getElementById('debugInfo');
+      const debugText = document.getElementById('debugText');
+      debugText.textContent = message;
+      debugElement.style.display = 'block';
+    }
+
+    function setLoading(isLoading) {
+      const button = document.getElementById('loginButton');
+      const loading = document.getElementById('loading');
+      
+      if (isLoading) {
+        button.disabled = true;
+        button.textContent = 'Logging in...';
+        loading.style.display = 'block';
+      } else {
+        button.disabled = false;
+        button.textContent = 'Login';
+        loading.style.display = 'none';
+      }
+    }
+
+    function validateForm(email, password) {
+      let isValid = true;
+      hideAllErrors();
+
+      if (!email || !email.includes('@')) {
+        showError('loginEmailError', 'Please enter a valid email address');
+        isValid = false;
+      }
+
+      if (!password || password.length < 6) {
+        showError('loginPasswordError', 'Password must be at least 6 characters long');
+        isValid = false;
+      }
+
+      return isValid;
+    }
+
+    // Check if user is already logged in
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        showDebug(`User already logged in: ${user.email}`);
+        // If user is already logged in, redirect to dashboard
+        // Comment out the next line if you don't want auto-redirect
+        // window.location.href = 'dashboard.html';
+      } else {
+        showDebug('No user logged in');
+      }
+    });
+
+    // Login function
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAllErrors();
+      
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+
+      // Validate form
+      if (!validateForm(email, password)) {
+        return;
+      }
+
+      setLoading(true);
+      showDebug('Attempting to log in...');
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        
+        showSuccess(`Welcome back, ${user.displayName || user.email}!`);
+        showDebug(`Login successful! User: ${user.email}`);
+        
+        // Clear form
+        document.getElementById('loginForm').reset();
+        
+        // Redirect to dashboard
+        showDebug('Redirecting to dashboard...');
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 1500);
+
+      } catch (error) {
+        console.error('Login error:', error);
+        showDebug('Login failed: ' + error.message);
+        
+        // Handle specific Firebase auth errors
+        switch (error.code) {
+          case 'auth/user-not-found':
+            showError('loginEmailError', 'No account found with this email');
+            break;
+          case 'auth/wrong-password':
+            showError('loginPasswordError', 'Incorrect password');
+            break;
+          case 'auth/invalid-email':
+            showError('loginEmailError', 'Please enter a valid email address');
+            break;
+          case 'auth/user-disabled':
+            showError('loginEmailError', 'This account has been disabled');
+            break;
+          case 'auth/too-many-requests':
+            showError('loginEmailError', 'Too many failed attempts. Please try again later');
+            break;
+          case 'auth/network-request-failed':
+            showError('loginEmailError', 'Network error. Please check your connection');
+            break;
+          default:
+            showError('loginEmailError', 'Login failed. Please try again');
+        }
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>
